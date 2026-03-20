@@ -1,0 +1,122 @@
+[
+  {
+    "file": "hi_001.wav",
+    "lang": "hi",
+    "reference_text": "नमस्ते मैं आपकी कैसे मदद कर सकता हूँ",
+    "source": "gtts"
+  },
+  {
+    "file": "hi_002.wav",
+    "lang": "hi",
+    "reference_text": "कृपया अपना खाता नंबर बताइए",
+    "source": "gtts"
+  },
+  {
+    "file": "hi_003.wav",
+    "lang": "hi",
+    "reference_text": "आपका भुगतान सफलतापूर्वक हो गया है",
+    "source": "gtts"
+  },
+  {
+    "file": "hi_004.wav",
+    "lang": "hi",
+    "reference_text": "क्या आप अपना पासवर्ड बदलना चाहते हैं",
+    "source": "gtts"
+  },
+  {
+    "file": "hi_005.wav",
+    "lang": "hi",
+    "reference_text": "हमारी सेवा चौबीस घंटे उपलब्ध है",
+    "source": "gtts"
+  },
+  {
+    "file": "ta_001.wav",
+    "lang": "ta",
+    "reference_text": "வணக்கம் நான் உங்களுக்கு எப்படி உதவ முடியும்",
+    "source": "gtts"
+  },
+  {
+    "file": "ta_002.wav",
+    "lang": "ta",
+    "reference_text": "தயவுசெய்து உங்கள் கணக்கு எண்ணைக் கூறுங்கள்",
+    "source": "gtts"
+  },
+  {
+    "file": "ta_003.wav",
+    "lang": "ta",
+    "reference_text": "உங்கள் பணம் வெற்றிகரமாக செலுத்தப்பட்டது",
+    "source": "gtts"
+  },
+  {
+    "file": "ta_004.wav",
+    "lang": "ta",
+    "reference_text": "நீங்கள் உங்கள் கடவுச்சொல்லை மாற்ற விரும்புகிறீர்களா",
+    "source": "gtts"
+  },
+  {
+    "file": "ta_005.wav",
+    "lang": "ta",
+    "reference_text": "எங்கள் சேவை இருபத்தி நான்கு மணி நேரமும் கிடைக்கும்",
+    "source": "gtts"
+  },
+  {
+    "file": "te_001.wav",
+    "lang": "te",
+    "reference_text": "నమస్కారం నేను మీకు ఎలా సహాయం చేయగలను",
+    "source": "gtts"
+  },
+  {
+    "file": "te_002.wav",
+    "lang": "te",
+    "reference_text": "దయచేసి మీ ఖాతా నంబర్ చెప్పండి",
+    "source": "gtts"
+  },
+  {
+    "file": "te_003.wav",
+    "lang": "te",
+    "reference_text": "మీ చెల్లింపు విజయవంతంగా జరిగింది",
+    "source": "gtts"
+  },
+  {
+    "file": "te_004.wav",
+    "lang": "te",
+    "reference_text": "మీరు మీ పాస్వర్డ్ మార్చాలనుకుంటున్నారా",
+    "source": "gtts"
+  },
+  {
+    "file": "te_005.wav",
+    "lang": "te",
+    "reference_text": "మా సేవ ఇరవై నాలుగు గంటలు అందుబాటులో ఉంటుంది",
+    "source": "gtts"
+  },
+  {
+    "file": "bn_001.wav",
+    "lang": "bn",
+    "reference_text": "নমস্কার আমি আপনাকে কিভাবে সাহায্য করতে পারি",
+    "source": "gtts"
+  },
+  {
+    "file": "bn_002.wav",
+    "lang": "bn",
+    "reference_text": "দয়া করে আপনার অ্যাকাউন্ট নম্বর বলুন",
+    "source": "gtts"
+  },
+  {
+    "file": "bn_003.wav",
+    "lang": "bn",
+    "reference_text": "আপনার পেমেন্ট সফলভাবে হয়েছে",
+    "source": "gtts"
+  },
+  {
+    "file": "bn_004.wav",
+    "lang": "bn",
+    "reference_text": "আপনি কি আপনার পাসওয়ার্ড পরিবর্তন করতে চান",
+    "source": "gtts"
+  },
+  {
+    "file": "bn_005.wav",
+    "lang": "bn",
+    "reference_text": "আমাদের সেবা চব্বিশ ঘণ্টা উপলব্ধ",
+    "source": "gtts"
+  }
+]

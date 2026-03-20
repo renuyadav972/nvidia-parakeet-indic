@@ -1,0 +1,27 @@
+[project]
+name = "parakeet-indic-demo"
+version = "0.1.0"
+description = "Live Indic ASR demo with NVIDIA Parakeet RNNT via NIM API + Plivo telephony"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "sse-starlette",
+    "python-dotenv",
+    "loguru",
+    "numpy",
+    "httpx",
+    "jiwer",
+    "audioop-lts;python_version>='3.13'",
+    "websockets",
+]
+
+[project.optional-dependencies]
+benchmark = [
+    "datasets",
+    "soundfile",
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"

@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parakeet Indic ASR Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #09090f;
+    --surface: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.08);
+    --text: #e4e4e7;
+    --text-dim: #a1a1aa;
+    --blue: #323DFE;
+    --cyan: #56CAF4;
+    --purple: #CD3EF9;
+    --green: #34d399;
+    --red: #f87171;
+    --orange: #fb923c;
+    --nvidia-green: #76b900;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3 { font-family: 'Sora', sans-serif; }
+  code, .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* Layout */
+  .app {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    grid-template-rows: auto 1fr;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    grid-column: 1 / -1;
+    padding: 20px 28px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .header h1 {
+    font-size: 18px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--nvidia-green), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .header .badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+  }
+  .header .live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--green);
+  }
+  .header .live-indicator .dot {
+    width: 8px; height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* Sidebar */
+  .sidebar {
+    border-right: 1px solid var(--border);
+    padding: 16px;
+    overflow-y: auto;
+  }
+  .sidebar h3 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+
+  .session-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .session-card:hover { border-color: rgba(255,255,255,0.16); }
+  .session-card.active { border-color: var(--cyan); }
+  .session-card .meta {
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .session-card .meta .mono { font-size: 11px; }
+  .session-card .stats {
+    display: flex;
+    gap: 12px;
+    margin-top: 6px;
+    font-size: 12px;
+  }
+  .session-card .stats span { color: var(--text-dim); }
+  .session-card .stats strong { color: var(--text); }
+  .session-card .live-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    margin-left: 4px;
+    animation: pulse 1.5s infinite;
+  }
+  .session-card .lang-tags {
+    display: flex;
+    gap: 4px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+  }
+
+  .lang-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+  .lang-badge.hi { background: linear-gradient(135deg, #f97316, #fb923c); color: #fff; }
+  .lang-badge.ta { background: linear-gradient(135deg, #8b5cf6, #a78bfa); color: #fff; }
+  .lang-badge.te { background: linear-gradient(135deg, #06b6d4, #22d3ee); color: #fff; }
+  .lang-badge.bn { background: linear-gradient(135deg, #ec4899, #f472b6); color: #fff; }
+  .lang-badge.en { background: linear-gradient(135deg, #6366f1, #818cf8); color: #fff; }
+
+  .del-btn {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: color 0.15s, background 0.15s;
+    float: right;
+  }
+  .del-btn:hover { color: var(--red); background: rgba(248,113,113,0.1); }
+
+  /* Main content */
+  .main {
+    padding: 24px;
+    overflow-y: auto;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 24px;
+  }
+  .tab-btn {
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tab-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.16); }
+  .tab-btn.active {
+    background: var(--surface);
+    color: var(--text);
+    border-color: var(--cyan);
+  }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .card h2 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Stats row */
+  .stat-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .stat-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    flex: 1;
+    min-width: 140px;
+  }
+  .stat-box .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+  .stat-box .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    font-weight: 500;
+  }
+  .stat-box .value.blue { color: var(--cyan); }
+  .stat-box .value.purple { color: var(--purple); }
+  .stat-box .value.green { color: var(--nvidia-green); }
+
+  /* Transcript area */
+  .transcript-area {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    min-height: 200px;
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    font-size: 16px;
+    line-height: 1.8;
+  }
+  .transcript-line {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .transcript-line .text { flex: 1; }
+  .transcript-line .text.partial { color: var(--text-dim); font-style: italic; }
+  .transcript-line .text.final { color: var(--text); }
+  .transcript-line .metrics-inline {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    white-space: nowrap;
+  }
+
+  /* Chart containers */
+  .chart-wrap {
+    position: relative;
+    height: 280px;
+    margin-bottom: 8px;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-dim);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  .text-dim { color: var(--text-dim); }
+
+  /* Empty state */
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-dim);
+  }
+  .empty h2 { font-size: 16px; margin-bottom: 8px; color: var(--text); }
+  .empty p { font-size: 13px; max-width: 400px; margin: 0 auto; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <h1>Parakeet Indic ASR Dashboard</h1>
+    <span class="badge">NVIDIA NIM + Plivo</span>
+    <span class="badge" id="session-count">0 sessions</span>
+    <div class="live-indicator" id="live-indicator" style="display:none">
+      <span class="dot"></span> Live
+    </div>
+  </div>
+
+  <div class="sidebar" id="sidebar">
+    <h3>Sessions</h3>
+    <div id="session-list"><p class="text-dim" style="font-size:12px">Loading...</p></div>
+  </div>
+
+  <div class="main">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="live" onclick="switchTab('live')">Live</button>
+      <button class="tab-btn" data-tab="session" onclick="switchTab('session')">Session Detail</button>
+      <button class="tab-btn" data-tab="compare" onclick="switchTab('compare')">Compare</button>
+    </div>
+
+    <!-- Live Tab -->
+    <div id="tab-live">
+      <div class="stat-row" id="live-stats">
+        <div class="stat-box">
+          <div class="label">Utterances</div>
+          <div class="value blue" id="stat-utterances">0</div>
+        </div>
+        <div class="stat-box">
+          <div class="label">Avg API Latency</div>
+          <div class="value purple" id="stat-latency">-<span style="font-size:14px">ms</span></div>
+        </div>
+        <div class="stat-box">
+          <div class="label">Avg RTF</div>
+          <div class="value green" id="stat-rtf">-</div>
+        </div>
+        <div class="stat-box">
+          <div class="label">Avg TTFT</div>
+          <div class="value blue" id="stat-ttft">-<span style="font-size:14px">ms</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Live Transcript</h2>
+        <div class="transcript-area" id="transcript-area">
+          <p class="text-dim">Waiting for audio stream... Connect via Plivo call or replay client.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>API Latency per Utterance</h2>
+        <div class="chart-wrap"><canvas id="live-latency-chart"></canvas></div>
+      </div>
+
+      <div class="card">
+        <h2>Per-Utterance Detail</h2>
+        <div style="overflow-x:auto">
+          <table id="live-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Lang</th>
+                <th>Transcript</th>
+                <th>API Latency</th>
+                <th>RTF</th>
+                <th>TTFT</th>
+                <th>WER</th>
+              </tr>
+            </thead>
+            <tbody id="live-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Session Detail Tab -->
+    <div id="tab-session" style="display:none">
+      <div class="empty" id="session-empty">
+        <h2>Select a session</h2>
+        <p>Click a session in the sidebar to view its details.</p>
+      </div>
+      <div id="session-content" style="display:none">
+        <div class="stat-row" id="session-stats"></div>
+        <div class="card">
+          <h2>API Latency per Utterance</h2>
+          <div class="chart-wrap"><canvas id="session-latency-chart"></canvas></div>
+        </div>
+        <div class="card">
+          <h2>Per-Utterance Detail</h2>
+          <div style="overflow-x:auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Lang</th>
+                  <th>Transcript</th>
+                  <th>API Latency</th>
+                  <th>RTF</th>
+                  <th>TTFT</th>
+                  <th>WER</th>
+                </tr>
+              </thead>
+              <tbody id="session-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Compare Tab -->
+    <div id="tab-compare" style="display:none">
+      <div class="empty" id="compare-empty">
+        <h2>Compare Sessions</h2>
+        <p>Session comparison across languages will appear here once multiple sessions are recorded.</p>
+      </div>
+      <div id="compare-content" style="display:none">
+        <div class="card">
+          <h2>API Latency by Language</h2>
+          <div class="chart-wrap"><canvas id="compare-latency-chart"></canvas></div>
+        </div>
+        <div class="card">
+          <h2>RTF by Language</h2>
+          <div class="chart-wrap"><canvas id="compare-rtf-chart"></canvas></div>
+        </div>
+        <div class="card">
+          <h2>Summary Table</h2>
+          <div style="overflow-x:auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>Session</th>
+                  <th>Languages</th>
+                  <th>Utterances</th>
+                  <th>Avg Latency</th>
+                  <th>Avg RTF</th>
+                  <th>Avg WER</th>
+                </tr>
+              </thead>
+              <tbody id="compare-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── State ──────────────────────────────────────────────────────────
+let sessions = [];
+let selectedSessionId = null;
+let charts = {};
+let liveUtterances = [];
+let evtSource = null;
+let isLiveConnected = false;
+
+const LANG_COLORS = {
+  hi: { bg: 'rgba(249,115,22,0.8)', border: '#f97316' },
+  ta: { bg: 'rgba(139,92,246,0.8)', border: '#8b5cf6' },
+  te: { bg: 'rgba(6,182,212,0.8)', border: '#06b6d4' },
+  bn: { bg: 'rgba(236,72,153,0.8)', border: '#ec4899' },
+  en: { bg: 'rgba(99,102,241,0.8)', border: '#6366f1' },
+};
+
+// ─── SSE Connection ─────────────────────────────────────────────────
+function connectSSE() {
+  if (evtSource) evtSource.close();
+  evtSource = new EventSource('/api/live');
+
+  evtSource.addEventListener('transcript', (e) => {
+    const data = JSON.parse(e.data);
+
+    if (data.type === 'connected') {
+      isLiveConnected = true;
+      document.getElementById('live-indicator').style.display = 'flex';
+      document.getElementById('transcript-area').innerHTML = '';
+      liveUtterances = [];
+      updateLiveStats();
+      return;
+    }
+
+    if (data.type === 'disconnected') {
+      isLiveConnected = false;
+      document.getElementById('live-indicator').style.display = 'none';
+      loadSessions();
+      return;
+    }
+
+    if (data.type === 'final' || data.type === 'partial') {
+      liveUtterances.push(data);
+      appendTranscript(data);
+      updateLiveStats();
+      updateLiveChart();
+      updateLiveTable();
+    }
+  });
+
+  evtSource.onerror = () => {
+    isLiveConnected = false;
+    document.getElementById('live-indicator').style.display = 'none';
+  };
+}
+
+function appendTranscript(data) {
+  const area = document.getElementById('transcript-area');
+  // Clear placeholder
+  if (area.querySelector('.text-dim')) area.innerHTML = '';
+
+  const line = document.createElement('div');
+  line.className = 'transcript-line';
+  line.innerHTML = `
+    <span class="lang-badge ${data.lang}">${data.lang}</span>
+    <span class="text ${data.type}">${escHtml(data.text)}</span>
+    <span class="metrics-inline">${data.metrics.api_latency_ms}ms</span>
+  `;
+  area.appendChild(line);
+  area.scrollTop = area.scrollHeight;
+}
+
+function updateLiveStats() {
+  const n = liveUtterances.length;
+  document.getElementById('stat-utterances').textContent = n;
+
+  const latencies = liveUtterances.map(u => u.metrics.api_latency_ms).filter(Boolean);
+  const rtfs = liveUtterances.map(u => u.metrics.rtf).filter(Boolean);
+  const ttfts = liveUtterances.map(u => u.metrics.ttft_ms).filter(Boolean);
+
+  document.getElementById('stat-latency').innerHTML = latencies.length
+    ? `${Math.round(latencies.reduce((a,b) => a+b, 0) / latencies.length)}<span style="font-size:14px">ms</span>`
+    : '-';
+  document.getElementById('stat-rtf').textContent = rtfs.length
+    ? (rtfs.reduce((a,b) => a+b, 0) / rtfs.length).toFixed(3)
+    : '-';
+  document.getElementById('stat-ttft').innerHTML = ttfts.length
+    ? `${Math.round(ttfts.reduce((a,b) => a+b, 0) / ttfts.length)}<span style="font-size:14px">ms</span>`
+    : '-';
+}
+
+function updateLiveChart() {
+  const ctx = document.getElementById('live-latency-chart');
+  if (charts.liveLatency) charts.liveLatency.destroy();
+
+  const labels = liveUtterances.map((u, i) => `#${i + 1}`);
+  const data = liveUtterances.map(u => u.metrics.api_latency_ms);
+  const colors = liveUtterances.map(u => (LANG_COLORS[u.lang] || LANG_COLORS.en).bg);
+
+  charts.liveLatency = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'API Latency (ms)',
+        data,
+        backgroundColor: colors,
+        borderRadius: 6,
+      }]
+    },
+    options: { ...chartOpts('ms'), plugins: { ...chartOpts('ms').plugins, legend: { display: false } } },
+  });
+}
+
+function updateLiveTable() {
+  const tbody = document.getElementById('live-table-body');
+  tbody.innerHTML = liveUtterances.map((u, i) => `
+    <tr>
+      <td class="mono">${i + 1}</td>
+      <td><span class="lang-badge ${u.lang}">${u.lang}</span></td>
+      <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis">${escHtml(u.text)}</td>
+      <td class="mono">${u.metrics.api_latency_ms}ms</td>
+      <td class="mono">${u.metrics.rtf != null ? u.metrics.rtf.toFixed(3) : '-'}</td>
+      <td class="mono">${u.metrics.ttft_ms != null ? u.metrics.ttft_ms + 'ms' : '-'}</td>
+      <td class="mono">${u.metrics.wer != null ? (u.metrics.wer * 100).toFixed(1) + '%' : '-'}</td>
+    </tr>
+  `).join('');
+}
+
+// ─── Tabs ───────────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.getElementById('tab-live').style.display = tab === 'live' ? '' : 'none';
+  document.getElementById('tab-session').style.display = tab === 'session' ? '' : 'none';
+  document.getElementById('tab-compare').style.display = tab === 'compare' ? '' : 'none';
+  if (tab === 'compare') loadCompare();
+}
+
+// ─── Sidebar ────────────────────────────────────────────────────────
+async function loadSessions() {
+  try {
+    const r = await fetch('/api/sessions');
+    sessions = await r.json();
+  } catch (e) { return; }
+  document.getElementById('session-count').textContent = `${sessions.length} session${sessions.length !== 1 ? 's' : ''}`;
+  renderSidebar();
+}
+
+function renderSidebar() {
+  const el = document.getElementById('session-list');
+  if (!sessions.length) {
+    el.innerHTML = '<p class="text-dim" style="font-size:12px">No sessions yet. Make a call or use the replay client.</p>';
+    return;
+  }
+  el.innerHTML = sessions.map(s => {
+    const isActive = s.session_id === selectedSessionId;
+    const isLive = !s.ended_at;
+    const utts = s.summary?.total_utterances || 0;
+    const avgLat = s.summary?.avg_api_latency_ms || 0;
+    const langs = (s.summary?.languages || []);
+    return `
+      <div class="session-card ${isActive ? 'active' : ''}" onclick="selectSession('${s.session_id}')">
+        <button class="del-btn" title="Delete session" onclick="event.stopPropagation(); deleteSession('${s.session_id}')">&#x2715;</button>
+        <div class="lang-tags">
+          ${langs.map(l => `<span class="lang-badge ${l}">${l}</span>`).join('')}
+          ${isLive ? '<span class="live-dot"></span>' : ''}
+        </div>
+        <div class="stats">
+          <span>${utts} utt${utts !== 1 ? 's' : ''}</span>
+          <span>avg <strong class="mono">${avgLat}ms</strong></span>
+        </div>
+        <div class="meta mono">${s.session_id.slice(0, 8)}...</div>
+      </div>`;
+  }).join('');
+}
+
+async function selectSession(id) {
+  selectedSessionId = id;
+  renderSidebar();
+  switchTab('session');
+  const r = await fetch(`/api/sessions/${id}`);
+  const s = await r.json();
+  if (s) renderSessionDetail(s);
+}
+
+async function deleteSession(id) {
+  if (!confirm('Delete this session?')) return;
+  await fetch(`/api/sessions/${id}`, { method: 'DELETE' });
+  if (selectedSessionId === id) {
+    selectedSessionId = null;
+    document.getElementById('session-empty').style.display = '';
+    document.getElementById('session-content').style.display = 'none';
+  }
+  await loadSessions();
+}
+
+// ─── Session Detail ─────────────────────────────────────────────────
+function renderSessionDetail(s) {
+  document.getElementById('session-empty').style.display = 'none';
+  document.getElementById('session-content').style.display = '';
+
+  const sum = s.summary || {};
+  document.getElementById('session-stats').innerHTML = `
+    <div class="stat-box">
+      <div class="label">Utterances</div>
+      <div class="value blue">${sum.total_utterances || 0}</div>
+    </div>
+    <div class="stat-box">
+      <div class="label">Avg API Latency</div>
+      <div class="value purple">${sum.avg_api_latency_ms || 0}<span style="font-size:14px">ms</span></div>
+    </div>
+    <div class="stat-box">
+      <div class="label">Avg RTF</div>
+      <div class="value green">${sum.avg_rtf != null ? sum.avg_rtf : '-'}</div>
+    </div>
+    <div class="stat-box">
+      <div class="label">Avg TTFT</div>
+      <div class="value blue">${sum.avg_ttft_ms != null ? sum.avg_ttft_ms : '-'}<span style="font-size:14px">ms</span></div>
+    </div>
+    <div class="stat-box">
+      <div class="label">Avg WER</div>
+      <div class="value" style="color:var(--orange)">${sum.avg_wer != null ? (sum.avg_wer * 100).toFixed(1) + '%' : '-'}</div>
+    </div>
+  `;
+
+  // Chart
+  const utts = s.utterances || [];
+  const ctx = document.getElementById('session-latency-chart');
+  if (charts.sessionLatency) charts.sessionLatency.destroy();
+  charts.sessionLatency = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: utts.map((u, i) => `#${i + 1}`),
+      datasets: [{
+        label: 'API Latency (ms)',
+        data: utts.map(u => u.api_latency_ms),
+        backgroundColor: utts.map(u => (LANG_COLORS[u.language] || LANG_COLORS.en).bg),
+        borderRadius: 6,
+      }]
+    },
+    options: { ...chartOpts('ms'), plugins: { ...chartOpts('ms').plugins, legend: { display: false } } },
+  });
+
+  // Table
+  document.getElementById('session-table-body').innerHTML = utts.map((u, i) => `
+    <tr>
+      <td class="mono">${i + 1}</td>
+      <td><span class="lang-badge ${u.language}">${u.language}</span></td>
+      <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis">${escHtml(u.text || '')}</td>
+      <td class="mono">${u.api_latency_ms}ms</td>
+      <td class="mono">${u.rtf != null ? u.rtf.toFixed(3) : '-'}</td>
+      <td class="mono">${u.ttft_ms != null ? u.ttft_ms + 'ms' : '-'}</td>
+      <td class="mono">${u.wer != null ? (u.wer * 100).toFixed(1) + '%' : '-'}</td>
+    </tr>
+  `).join('');
+}
+
+// ─── Compare ────────────────────────────────────────────────────────
+async function loadCompare() {
+  if (sessions.length < 1) return;
+  document.getElementById('compare-empty').style.display = 'none';
+  document.getElementById('compare-content').style.display = '';
+
+  // Fetch all session details
+  const allData = await Promise.all(sessions.map(async s => {
+    const r = await fetch(`/api/sessions/${s.session_id}`);
+    return r.json();
+  }));
+
+  // Group utterances by language
+  const byLang = {};
+  for (const s of allData) {
+    for (const u of (s.utterances || [])) {
+      const lang = u.language || 'unknown';
+      if (!byLang[lang]) byLang[lang] = { latencies: [], rtfs: [] };
+      if (u.api_latency_ms) byLang[lang].latencies.push(u.api_latency_ms);
+      if (u.rtf != null) byLang[lang].rtfs.push(u.rtf);
+    }
+  }
+
+  const langs = Object.keys(byLang).sort();
+  const avgLatencies = langs.map(l => {
+    const vals = byLang[l].latencies;
+    return vals.length ? Math.round(vals.reduce((a,b) => a+b, 0) / vals.length) : 0;
+  });
+  const avgRtfs = langs.map(l => {
+    const vals = byLang[l].rtfs;
+    return vals.length ? +(vals.reduce((a,b) => a+b, 0) / vals.length).toFixed(3) : 0;
+  });
+
+  // Latency chart
+  const ctx1 = document.getElementById('compare-latency-chart');
+  if (charts.compareLatency) charts.compareLatency.destroy();
+  charts.compareLatency = new Chart(ctx1, {
+    type: 'bar',
+    data: {
+      labels: langs.map(l => l.toUpperCase()),
+      datasets: [{
+        label: 'Avg API Latency (ms)',
+        data: avgLatencies,
+        backgroundColor: langs.map(l => (LANG_COLORS[l] || LANG_COLORS.en).bg),
+        borderRadius: 6,
+      }]
+    },
+    options: { ...chartOpts('ms'), plugins: { ...chartOpts('ms').plugins, legend: { display: false } } },
+  });
+
+  // RTF chart
+  const ctx2 = document.getElementById('compare-rtf-chart');
+  if (charts.compareRtf) charts.compareRtf.destroy();
+  charts.compareRtf = new Chart(ctx2, {
+    type: 'bar',
+    data: {
+      labels: langs.map(l => l.toUpperCase()),
+      datasets: [{
+        label: 'Avg RTF',
+        data: avgRtfs,
+        backgroundColor: langs.map(l => (LANG_COLORS[l] || LANG_COLORS.en).bg),
+        borderRadius: 6,
+      }]
+    },
+    options: { ...chartOpts(''), plugins: { ...chartOpts('').plugins, legend: { display: false } } },
+  });
+
+  // Summary table
+  document.getElementById('compare-table-body').innerHTML = allData.map(s => {
+    const sum = s.summary || {};
+    return `
+      <tr>
+        <td class="mono">${s.session_id.slice(0, 8)}</td>
+        <td>${(sum.languages || []).map(l => `<span class="lang-badge ${l}">${l}</span>`).join(' ')}</td>
+        <td class="mono">${sum.total_utterances || 0}</td>
+        <td class="mono">${sum.avg_api_latency_ms || 0}ms</td>
+        <td class="mono">${sum.avg_rtf != null ? sum.avg_rtf : '-'}</td>
+        <td class="mono">${sum.avg_wer != null ? (sum.avg_wer * 100).toFixed(1) + '%' : '-'}</td>
+      </tr>`;
+  }).join('');
+}
+
+// ─── Chart defaults ─────────────────────────────────────────────────
+function chartOpts(unit) {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { labels: { color: '#a1a1aa', font: { family: 'Inter', size: 12 } } },
+      tooltip: { backgroundColor: '#18181b', titleColor: '#e4e4e7', bodyColor: '#e4e4e7', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1 },
+    },
+    scales: {
+      x: { ticks: { color: '#a1a1aa' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+      y: { beginAtZero: true, ticks: { color: '#a1a1aa', callback: v => unit ? `${v}${unit}` : v }, grid: { color: 'rgba(255,255,255,0.05)' } },
+    },
+  };
+}
+
+// ─── Helpers ────────────────────────────────────────────────────────
+function escHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+// ─── Init ───────────────────────────────────────────────────────────
+loadSessions();
+setInterval(loadSessions, 5000);
+connectSSE();
+</script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+{
+  "timestamp": "2026-03-18T23:30:16Z",
+  "model": "parakeet-1.1b-rnnt-multilingual (indic profile)",
+  "languages": {
+    "hi": {
+      "utterances": 5,
+      "avg_wer": 0.0636,
+      "ttfs_median_ms": 7438,
+      "api_latency_median_ms": 289,
+      "results": [
+        {
+          "file": "hi_001.wav",
+          "lang": "hi",
+          "reference": "नमस्ते मैं आपकी कैसे मदद कर सकता हूँ",
+          "hypothesis": "नमस्ते, मैं आपकी कैसे मदद कर सकता हूँ।",
+          "wer": 0.0,
+          "ttfs_ms": 7456,
+          "api_latency_ms": 466,
+          "audio_duration_s": 3.4,
+          "fragment_count": 1
+        },
+        {
+          "file": "hi_002.wav",
+          "lang": "hi",
+          "reference": "कृपया अपना खाता नंबर बताइए",
+          "hypothesis": "अपना खाता नंबर बताएँ।",
+          "wer": 0.3182,
+          "ttfs_ms": 7438,
+          "api_latency_ms": 289,
+          "audio_duration_s": 2.7,
+          "fragment_count": 1
+        },
+        {
+          "file": "hi_003.wav",
+          "lang": "hi",
+          "reference": "आपका भुगतान सफलतापूर्वक हो गया है",
+          "hypothesis": "आपका भुगतान सफलतापूर्वक हो गया है",
+          "wer": 0.0,
+          "ttfs_ms": 7436,
+          "api_latency_ms": 267,
+          "audio_duration_s": 3.38,
+          "fragment_count": 1
+        },
+        {
+          "file": "hi_004.wav",
+          "lang": "hi",
+          "reference": "क्या आप अपना पासवर्ड बदलना चाहते हैं",
+          "hypothesis": "क्या आप अपना पासवर्ड बदलना चाहते हैं",
+          "wer": 0.0,
+          "ttfs_ms": 7449,
+          "api_latency_ms": 368,
+          "audio_duration_s": 3.16,
+          "fragment_count": 1
+        },
+        {
+          "file": "hi_005.wav",
+          "lang": "hi",
+          "reference": "हमारी सेवा चौबीस घंटे उपलब्ध है",
+          "hypothesis": "हमारी सेवा चौबीस घंटे उपलब्ध है।",
+          "wer": 0.0,
+          "ttfs_ms": 7433,
+          "api_latency_ms": 276,
+          "audio_duration_s": 3.14,
+          "fragment_count": 2
+        }
+      ]
+    },
+    "ta": {
+      "utterances": 5,
+      "avg_wer": 0.0546,
+      "ttfs_median_ms": 7441,
+      "api_latency_median_ms": 282,
+      "results": [
+        {
+          "file": "ta_001.wav",
+          "lang": "ta",
+          "reference": "வணக்கம் நான் உங்களுக்கு எப்படி உதவ முடியும்",
+          "hypothesis": "வணக்கம், நான் உங்களுக்கு எப்படி உதவ முடியும்?",
+          "wer": 0.0,
+          "ttfs_ms": 7453,
+          "api_latency_ms": 291,
+          "audio_duration_s": 3.6,
+          "fragment_count": 1
+        },
+        {
+          "file": "ta_002.wav",
+          "lang": "ta",
+          "reference": "தயவுசெய்து உங்கள் கணக்கு எண்ணைக் கூறுங்கள்",
+          "hypothesis": "தயவு செய்து உங்கள் கணக்கு எண்ணைக் கூறுங்கள்.",
+          "wer": 0.0,
+          "ttfs_ms": 7438,
+          "api_latency_ms": 282,
+          "audio_duration_s": 3.68,
+          "fragment_count": 1
+        },
+        {
+          "file": "ta_003.wav",
+          "lang": "ta",
+          "reference": "உங்கள் பணம் வெற்றிகரமாக செலுத்தப்பட்டது",
+          "hypothesis": "உங்கள் பணம் விற்று. வெற்றிகரமாக செலுத்தப்பட்டது.",
+          "wer": 0.1667,
+          "ttfs_ms": 7441,
+          "api_latency_ms": 278,
+          "audio_duration_s": 3.3,
+          "fragment_count": 2
+        },
+        {
+          "file": "ta_004.wav",
+          "lang": "ta",
+          "reference": "நீங்கள் உங்கள் கடவுச்சொல்லை மாற்ற விரும்புகிறீர்களா",
+          "hypothesis": "நீங்கள் உங்கள் கடவுச் சொல்லை மாற்ற விரும்புகிறீர்கள். গিলা।",
+          "wer": 0.1064,
+          "ttfs_ms": 7437,
+          "api_latency_ms": 301,
+          "audio_duration_s": 3.96,
+          "fragment_count": 2
+        },
+        {
+          "file": "ta_005.wav",
+          "lang": "ta",
+          "reference": "எங்கள் சேவை இருபத்தி நான்கு மணி நேரமும் கிடைக்கும்",
+          "hypothesis": "எங்கள் சேவை இருபத்தி நான்கு மணி நேரமும் கிடைக்கும்.",
+          "wer": 0.0,
+          "ttfs_ms": 7456,
+          "api_latency_ms": 269,
+          "audio_duration_s": 4.22,
+          "fragment_count": 1
+        }
+      ]
+    },
+    "bn": {
+      "utterances": 5,
+      "avg_wer": 0.0807,
+      "ttfs_median_ms": 7456,
+      "api_latency_median_ms": 275,
+      "results": [
+        {
+          "file": "bn_001.wav",
+          "lang": "bn",
+          "reference": "নমস্কার আমি আপনাকে কিভাবে সাহায্য করতে পারি",
+          "hypothesis": "নমস্কার, আমি আপনাকে কিভাবে সাহায্য করতে পারি?",
+          "wer": 0.0,
+          "ttfs_ms": 7456,
+          "api_latency_ms": 275,
+          "audio_duration_s": 4.26,
+          "fragment_count": 1
+        },
+        {
+          "file": "bn_002.wav",
+          "lang": "bn",
+          "reference": "দয়া করে আপনার অ্যাকাউন্ট নম্বর বলুন",
+          "hypothesis": "দয়া করে আপনার অ্যাকাউন্ট নম্বর বলুন।",
+          "wer": 0.0,
+          "ttfs_ms": 7442,
+          "api_latency_ms": 281,
+          "audio_duration_s": 3.6,
+          "fragment_count": 1
+        },
+        {
+          "file": "bn_003.wav",
+          "lang": "bn",
+          "reference": "আপনার পেমেন্ট সফলভাবে হয়েছে",
+          "hypothesis": "আপনার পেমেন্ট করতে পারে। সফলভাবে হয়েছে।",
+          "wer": 0.32,
+          "ttfs_ms": 7461,
+          "api_latency_ms": 282,
+          "audio_duration_s": 3.0,
+          "fragment_count": 2
+        },
+        {
+          "file": "bn_004.wav",
+          "lang": "bn",
+          "reference": "আপনি কি আপনার পাসওয়ার্ড পরিবর্তন করতে চান",
+          "hypothesis": "আপনি কি আপনার পাসওয়ার্ড পরিবর্তন করতে পারে?",
+          "wer": 0.0833,
+          "ttfs_ms": 7447,
+          "api_latency_ms": 258,
+          "audio_duration_s": 4.02,
+          "fragment_count": 1
+        },
+        {
+          "file": "bn_005.wav",
+          "lang": "bn",
+          "reference": "আমাদের সেবা চব্বিশ ঘণ্টা উপলব্ধ",
+          "hypothesis": "আমাদের সেবা চব্বিশ ঘণ্টা উপলব্ধ।",
+          "wer": 0.0,
+          "ttfs_ms": 7467,
+          "api_latency_ms": 269,
+          "audio_duration_s": 3.52,
+          "fragment_count": 1
+        }
+      ]
+    }
+  }
+}

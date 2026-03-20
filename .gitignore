@@ -1,0 +1,7 @@
+.env
+.venv/
+__pycache__/
+data/sessions/*.json
+data/benchmark_summary.json
+test_utterances/**/*.wav
+*.pyc
