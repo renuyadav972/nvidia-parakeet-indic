@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nvidia-parakeet-indic.vercel.app</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    /* Plivo brand palette */
+    --plivo-blue: #323DFE;
+    --plivo-cyan: #56CAF4;
+    --plivo-purple: #CD3EF9;
+
+    --bg: #fafafa;
+    --surface: #ffffff;
+    --border: #e5e7eb;
+    --border-light: #f3f4f6;
+    --text: #0b0f2c;
+    --text-dim: #4b5168;
+    --text-muted: #8a90a8;
+    --green: #059669;
+    --green-bg: #ecfdf5;
+    --blue: var(--plivo-blue);
+    --blue-bg: #eef0ff;
+    --purple: var(--plivo-purple);
+    --purple-bg: #fbeefe;
+    --orange: #ea580c;
+    --orange-bg: #fff7ed;
+    --cyan: var(--plivo-cyan);
+    --cyan-bg: #ecf9fe;
+    --shadow-sm: 0 1px 2px rgba(11,15,44,0.05);
+    --shadow: 0 1px 3px rgba(11,15,44,0.1), 0 1px 2px rgba(11,15,44,0.06);
+    --shadow-md: 0 4px 6px rgba(11,15,44,0.07), 0 2px 4px rgba(11,15,44,0.06);
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; line-height: 1.6; }
+  h1, h2, h3 { font-family: 'Sora', sans-serif; letter-spacing: -0.01em; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* Hero Header */
+  .header {
+    background: linear-gradient(135deg, #eef0ff 0%, #ecf9fe 45%, #fbeefe 100%);
+    padding: 48px 40px 40px;
+    border-bottom: 1px solid var(--border);
+  }
+  .header h1 { font-size: 32px; font-weight: 800; margin-bottom: 10px; letter-spacing: -0.03em; }
+  .header h1 span { background: linear-gradient(135deg, var(--plivo-blue) 0%, var(--plivo-cyan) 50%, var(--plivo-purple) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .header p { color: var(--text-dim); font-size: 15px; max-width: 720px; line-height: 1.7; }
+  .badges { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+  .badge { font-size: 12px; font-weight: 600; padding: 5px 14px; border-radius: 9999px; background: var(--surface); box-shadow: var(--shadow-sm); color: var(--text-dim); }
+  .badge.nvidia { background: var(--cyan-bg); color: #0e6b94; }
+  .badge.plivo { background: var(--blue-bg); color: var(--plivo-blue); }
+  .badge.hi { background: linear-gradient(135deg, var(--plivo-blue), var(--plivo-purple)); color: #fff; }
+
+  .content { padding: 40px; max-width: 1100px; margin: 0 auto; }
+
+  /* Section headers */
+  .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 12px; }
+
+  /* Cards */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 24px; box-shadow: var(--shadow-sm); }
+  .card h2 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 20px; }
+
+  /* Metric cards */
+  .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 28px; }
+  .metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; box-shadow: var(--shadow-sm); transition: box-shadow 0.2s; }
+  .metric-card:hover { box-shadow: var(--shadow-md); }
+  .metric-card .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
+  .metric-card .value { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 600; }
+  .metric-card .detail { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+
+  /* Findings */
+  .finding { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 20px; }
+  .finding .num { width: 28px; height: 28px; border-radius: 8px; background: var(--blue-bg); color: var(--plivo-blue); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .finding p { font-size: 14px; line-height: 1.7; }
+  .finding strong { color: var(--text); }
+
+  /* Quality table */
+  .quality-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; }
+  .quality-table th { text-align: left; font-weight: 600; color: var(--text-dim); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; padding: 12px 16px; border-bottom: 2px solid var(--border); }
+  .quality-table td { padding: 14px 16px; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+  .quality-table tr:last-child td { border-bottom: none; }
+  .quality-table .feature { font-weight: 600; color: var(--text); }
+  .rating-good { display: inline-block; padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; background: var(--green-bg); color: var(--green); }
+  .rating-partial { display: inline-block; padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; background: var(--orange-bg); color: var(--orange); }
+  .rating-ok { display: inline-block; padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; background: var(--blue-bg); color: var(--blue); }
+
+  /* Audio player */
+  .audio-player { display: flex; align-items: center; gap: 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; margin-bottom: 20px; }
+  .audio-player audio { flex: 1; height: 40px; }
+  .audio-player .label { font-size: 13px; font-weight: 600; color: var(--text-dim); white-space: nowrap; }
+
+  /* Pipeline */
+  .pipeline-flow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 16px 0; }
+  .pipeline-step { border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 600; background: var(--surface); box-shadow: var(--shadow-sm); }
+  .pipeline-step.stt { border-color: var(--cyan); color: #0e6b94; background: var(--cyan-bg); }
+  .pipeline-step.llm { border-color: var(--blue); color: var(--blue); background: var(--blue-bg); }
+  .pipeline-step.tts { border-color: var(--purple); color: var(--purple); background: var(--purple-bg); }
+  .pipeline-step.plivo { border-color: var(--blue); color: var(--plivo-blue); background: var(--blue-bg); }
+  .pipeline-step.phone { border-color: var(--text-muted); color: var(--text-dim); }
+  .arrow { color: var(--text-muted); font-size: 16px; }
+
+  /* Transcript table */
+  .transcript-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
+  .transcript-table th { text-align: left; font-weight: 600; color: var(--text-dim); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; padding: 10px 14px; border-bottom: 2px solid var(--border); background: var(--bg); }
+  .transcript-table td { padding: 12px 14px; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+  .transcript-table tr:last-child td { border-bottom: none; }
+  .transcript-table tr:hover td { background: var(--bg); }
+
+  /* Conversation */
+  .conversation { display: flex; flex-direction: column; gap: 20px; }
+  .turn-block { padding: 16px; border-radius: 12px; background: var(--bg); border: 1px solid var(--border-light); }
+  .turn-user { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+  .turn-bot { font-size: 14px; color: var(--text-dim); margin-bottom: 4px; }
+  .turn-meta { font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+
+  /* Lang badge */
+  .lang-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; text-transform: uppercase; }
+  .lang-badge.hi { background: linear-gradient(135deg, var(--plivo-blue), var(--plivo-purple)); color: #fff; }
+
+  /* Technical table */
+  .tech-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; }
+  .tech-table td { padding: 12px 16px; border-bottom: 1px solid var(--border-light); }
+  .tech-table td:first-child { font-weight: 600; color: var(--text-dim); width: 180px; }
+  .tech-table tr:last-child td { border-bottom: none; }
+
+  @media (max-width: 768px) { .content { padding: 20px; } .header { padding: 28px 20px; } .header h1 { font-size: 22px; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Testing <span>NVIDIA Indic Profiles</span> with Plivo Telephony</h1>
+  <p>We built a Hindi voice agent using NVIDIA Parakeet for speech-to-text and tested it with real phone calls. Here's what we found.</p>
+  <div class="badges">
+    <span class="badge nvidia">Parakeet RNNT 1.1B</span>
+    <span class="badge plivo">Plivo WebSocket</span>
+    <span class="badge hi">Hindi</span>
+    <span class="badge">NIM Cloud (AWS Virginia)</span>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- FINDINGS & QUALITY -->
+<div class="card">
+  <h2>Findings</h2>
+  <table class="quality-table">
+    <thead><tr><th style="width:30%">Category</th><th style="width:12%">Rating</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="feature">Parakeet STT (Hindi)</td>
+        <td><span class="rating-good">Good</span></td>
+        <td>Accurate on full sentences over phone audio. Clean punctuation, handles numbers and cricket terminology well. Picks up speaker gender ("सकती" vs "सकता").</td>
+      </tr>
+      <tr>
+        <td class="feature">Hinglish / Code-switching</td>
+        <td><span class="rating-partial">Partial</span></td>
+        <td>Gets common English words in Hindi ("प्लेयर्स", "Thank you") but not always right. "वाइड बॉल" heard as "वाइट बॉल".</td>
+      </tr>
+      <tr>
+        <td class="feature">ElevenLabs TTS (Hindi)</td>
+        <td><span class="rating-partial">Okay</span></td>
+        <td>Correct pronunciation but flat intonation. Sounds formal, not conversational. ElevenLabs limitation, not Parakeet.</td>
+      </tr>
+      <tr>
+        <td class="feature">Cloud NIM Limitations</td>
+        <td><span class="rating-partial">Limited</span></td>
+        <td>Batch-only (no streaming). Only Hindi on the default function ID. Tamil and Bengali require the Indic profile, available only via self-hosted NIM container.</td>
+      </tr>
+      <tr>
+        <td class="feature">Production Readiness</td>
+        <td><span class="rating-ok">With caveats</span></td>
+        <td>STT accuracy is good enough for IVR and call center use. For a consumer voice assistant, would need streaming mode (self-hosted) and better Hindi TTS.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- LATEST CALL -->
+<div class="card">
+  <h2>Latest Call: 10-Turn Hindi/Hinglish Conversation</h2>
+  <div class="audio-player">
+    <span class="label"><span class="lang-badge hi">HI</span> Hindi + Hinglish call</span>
+    <audio controls src="recordings/hindi-cricket-v2.mp3"></audio>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:12px;margin-bottom:20px">
+    <div class="metric-card"><div class="label">Turns</div><div class="value" style="color:var(--plivo-blue)">10</div></div>
+    <div class="metric-card"><div class="label">Language</div><div class="value" style="color:var(--plivo-purple);font-size:20px">Hindi + Hinglish</div></div>
+    <div class="metric-card"><div class="label">Audio</div><div class="value" style="color:var(--text);font-size:20px">Phone call</div><div class="detail">Via Plivo telephony</div></div>
+  </div>
+  <table class="transcript-table">
+    <thead><tr><th>Turn</th><th>User Said</th><th>Bot Responded</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">1</td><td>(asked about cricket rules)</td><td>नमस्ते! क्रिकेट के नियम काफी विस्तृत हैं...</td></tr>
+      <tr><td class="mono">2</td><td>कितने खिलाड़ी होते हैं, कितने प्लेयर्स होते हैं</td><td>एक क्रिकेट टीम में 11 खिलाड़ी होते हैं।</td></tr>
+      <tr><td class="mono">3</td><td>और जीतने के लिए क्या करना पड़ता है।</td><td>जीतने के लिए एक टीम को दूसरी टीम से ज़्यादा रन बनाने होते हैं।</td></tr>
+      <tr><td class="mono">4</td><td>और एक ओवर में कितने बॉल्स होते हैं।</td><td>एक ओवर में 6 गेंदें होती हैं।</td></tr>
+      <tr><td class="mono">5</td><td>और कोई रूल्स जो मुझे पता होने चाहिए</td><td>कुछ और नियम हैं जैसे आउट होने के तरीके (बोल्ड, कैच, LBW), नो बॉल, वाइड बॉल...</td></tr>
+      <tr><td class="mono">6</td><td>ओके वाइड बॉल क्या होता है?</td><td>वाइड बॉल तब होती है जब गेंद बल्लेबाज की पहुंच से इतनी दूर होती है...</td></tr>
+      <tr><td class="mono">7</td><td>Thank you.</td><td>मुझे खुशी है कि मैं आपकी मदद कर सकी!</td></tr>
+      <tr><td class="mono">8</td><td>Thank you.</td><td>आपका दिन शुभ हो! अलविदा।</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:12px;color:var(--text-muted);margin-top:14px">Note: The caller used Hinglish naturally ("कितने प्लेयर्स", "वाइड बॉल क्या होता है", "Thank you") and Parakeet handled the code-switching between Hindi and English.</p>
+</div>
+
+<!-- HOW WE TESTED -->
+<div class="card">
+  <h2>How We Tested</h2>
+  <div class="pipeline-flow">
+    <span class="pipeline-step phone">Caller speaks Hindi</span>
+    <span class="arrow">&rarr;</span>
+    <span class="pipeline-step plivo">Plivo telephony</span>
+    <span class="arrow">&rarr;</span>
+    <span class="pipeline-step stt">Parakeet STT</span>
+    <span class="arrow">&rarr;</span>
+    <span class="pipeline-step llm">Gemini 2.5 Flash</span>
+    <span class="arrow">&rarr;</span>
+    <span class="pipeline-step tts">ElevenLabs TTS</span>
+    <span class="arrow">&rarr;</span>
+    <span class="pipeline-step plivo">Plivo telephony</span>
+    <span class="arrow">&rarr;</span>
+    <span class="pipeline-step phone">Caller hears response</span>
+  </div>
+  <p style="font-size:13px;color:var(--text-dim);margin-top:14px;line-height:1.7">
+    We built a Hindi voice agent using Plivo for telephony, NVIDIA Parakeet for speech-to-text, Gemini 2.5 Flash for conversation, and ElevenLabs for text-to-speech. A real person called in and had a conversation in Hindi. The NIM cloud gRPC API is hosted on AWS us-east-1 (Virginia). Latency numbers include the full network round-trip from Texas to Virginia. The call was recorded by Plivo.
+  </p>
+</div>
+
+<!-- EARLIER CALL -->
+<div class="card">
+  <h2>Earlier Call: Cricket Rules Conversation</h2>
+  <div class="audio-player">
+    <span class="label"><span class="lang-badge hi">HI</span> Hindi call</span>
+    <audio controls src="recordings/hindi-call.mp3"></audio>
+  </div>
+  <div class="conversation">
+    <div class="turn-block">
+      <div class="turn-user">User: क्या आप मुझे क्रिकेट के रूल्स समझा सकती हैं</div>
+      <div class="turn-bot">Bot: हाँ, ज़रूर! क्रिकेट के रूल्स काफी होते हैं, लेकिन मैं आपको मुख्य बातें बता सकती हूँ। क्या आप किसी खास रूल के बारे में जानना चाहती हैं या एक सामान्य जानकारी चाहिए?</div>
+      <div class="turn-meta">Parakeet STT</div>
+    </div>
+    <div class="turn-block">
+      <div class="turn-user">User: हाँ, नॉर्मल जानकारी।</div>
+      <div class="turn-bot">Bot: ठीक है। क्रिकेट में दो टीमें होती हैं। एक टीम बैटिंग करती है और दूसरी फील्डिंग। बैटिंग करने वाली टीम रन बनाती है और फील्डिंग वाली टीम उन्हें आउट करके रन बनाने से रोकती है। जब दोनों टीमें एक-एक बार बैटिंग कर लेती हैं, तो जिसके ज़्यादा रन होते हैं, वो जीत जाती है।</div>
+      <div class="turn-meta">Parakeet STT</div>
+    </div>
+    <div class="turn-block">
+      <div class="turn-user">User: ठीक है और कितने ओवर होते हैं</div>
+      <div class="turn-bot">Bot: यह मैच के फॉर्मेट पर निर्भर करता है। टेस्ट मैच में कोई ओवर लिमिट नहीं होती, जबकि वनडे मैच में 50 ओवर होते हैं और टी20 मैच में 20 ओवर होते हैं।</div>
+      <div class="turn-meta">Parakeet STT</div>
+    </div>
+  </div>
+</div>
+
+<!-- TECHNICAL DETAILS -->
+<div class="card">
+  <h2>Technical Details</h2>
+  <table class="tech-table">
+    <tbody>
+      <tr><td>Model</td><td>NVIDIA Parakeet RNNT 1.1B Multilingual</td></tr>
+      <tr><td>API</td><td><code class="mono" style="background:var(--bg);padding:2px 8px;border-radius:4px;font-size:13px">grpc.nvcf.nvidia.com:443</code></td></tr>
+      <tr><td>Function ID</td><td class="mono" style="font-size:13px">71203149-d3b7-4460-8231-1be2543a1fca</td></tr>
+      <tr><td>Telephony</td><td>Plivo bidirectional WebSocket</td></tr>
+      <tr><td>Audio Input</td><td>Phone-quality telephony audio via Plivo</td></tr>
+      <tr><td>NIM Endpoint</td><td>AWS us-east-1 (Ashburn, Virginia)</td></tr>
+      <tr><td>Framework</td><td>Pipecat 0.0.108</td></tr>
+      <tr><td>Language</td><td>Hindi (hi-IN)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
+</body>
+</html>
