@@ -70,7 +70,7 @@ nim_client = NIMClient()
 
 PLIVO_XML = """<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Stream bidirectional="true" keepCallAlive="true" contentType="audio/x-mulaw;rate=8000">wss://{domain}/ws</Stream>
+  <Stream bidirectional="true" keepCallAlive="true" contentType="audio/x-mulaw;rate=8000">wss://{domain}/ws?language={language}</Stream>
 </Response>"""
 
 
@@ -78,8 +78,9 @@ PLIVO_XML = """<?xml version="1.0" encoding="UTF-8"?>
 async def plivo_webhook(request: Request):
     """Plivo answer_url - tells Plivo to open a bidirectional audio stream."""
     domain = request.headers.get("host") or DOMAIN
-    xml = PLIVO_XML.format(domain=domain)
-    logger.info(f"Plivo webhook hit - streaming to wss://{domain}/ws")
+    language = request.query_params.get("language", DEFAULT_LANGUAGE)
+    xml = PLIVO_XML.format(domain=domain, language=language)
+    logger.info(f"Plivo webhook hit - lang={language} streaming to wss://{domain}/ws")
     return Response(content=xml, media_type="application/xml")
 
 
